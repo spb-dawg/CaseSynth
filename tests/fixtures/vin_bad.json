@@ -1,0 +1,16 @@
+{
+ "Count": 1,
+ "Results": [
+  {
+   "Make": "KENWORTH",
+   "Model": "T680",
+   "ModelYear": "2014",
+   "Manufacturer": "KENWORTH TRUCK COMPANY",
+   "BodyClass": "Truck-Tractor",
+   "VehicleType": "TRUCK",
+   "GVWR": "Class 8: 33,001 lb and above (14,969 kg and above)",
+   "ErrorCode": "1,400",
+   "ErrorText": "1 - Check Digit (9th position) does not calculate properly; 400 - Invalid Characters Present"
+  }
+ ]
+}

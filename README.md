@@ -16,13 +16,22 @@ Built:
   deadlines and report errors. Every flag names the report field it came from.
 - **Brief.** Markdown output for a paralegal, or JSON for another system.
 
+- **Outside lookups** (`--lookups`). For each vehicle, NHTSA's VIN decode, recalls and
+  owner complaints; for each commercial vehicle with a USDOT number, the carrier's
+  FMCSA record (status, authority, fleet size, inspections and out-of-service rates
+  against the national average, reported crashes, safety rating). Findings become
+  flags: a recall on the same system as the officer's defect code, an above-average
+  out-of-service rate, a carrier name that does not match its USDOT number, a VIN
+  that does not decode or does not match the vehicle on the report.
+
 Not built yet:
 
 - **Reading the PDF.** The decoder takes a structured record (JSON). Extracting that
   record from a report PDF needs real sample reports to build and test against.
 - **Older form versions** (2010, 2015, 2017, 2018). Code meanings differ between
   versions, so other versions are refused until their tables are loaded.
-- **Outside lookups** (federal carrier records, recalls, property records).
+- **More outside lookups.** Per-inspection violation detail, carrier insurance on
+  file, Texas-only carriers (TxDMV numbers), property records.
 - **Narrative against codes.** Conflicts between the officer's narrative and the coded
   boxes are not detected; the narrative is only scanned for keywords.
 - **Damage area codes.** These are defined in TxDOT's CR-80 Vehicle Damage Guide,
@@ -40,6 +49,22 @@ python -m cr3 examples/commercial_rear_end.json --client-unit 3
 python -m cr3 examples/commercial_rear_end.json --client-unit 3 --json
 python -m unittest discover -s tests
 ```
+
+```
+python -m cr3 examples/commercial_rear_end.json --client-unit 3 --lookups
+```
+
+`--lookups` goes online. It sends only the VIN and USDOT number from the report to
+NHTSA and FMCSA; no names, addresses, plates or policy numbers leave the machine.
+A lookup that fails is flagged in the brief and does not stop it. Recalls and
+complaints are for the make, model and year, so a specific VIN's recall status still
+has to be confirmed. The carrier record is read from FMCSA's public snapshot page;
+FMCSA's keyed API would be sturdier and is the planned replacement.
+
+The example report uses made-up VINs and a made-up USDOT number, so a live run on it
+reports that they do not check out. `examples/commercial_rear_end.lookups.brief.md`
+shows the output with lookups, generated from saved responses: the carrier is
+fictional, the Kenworth recalls and Camry complaints are real NHTSA records.
 
 `--client-unit` is the unit number of the firm's client. Fault, impairment and
 insurance facts are sorted into dealbreakers or case builders depending on whose

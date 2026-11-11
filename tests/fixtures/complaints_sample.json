@@ -1,0 +1,190 @@
+{
+ "count": 8,
+ "message": "Results returned successfully",
+ "results": [
+  {
+   "odiNumber": 11773787,
+   "manufacturer": "Toyota Motor Corporation",
+   "crash": false,
+   "fire": false,
+   "numberOfInjuries": 0,
+   "numberOfDeaths": 0,
+   "dateOfIncident": "09/30/2026",
+   "dateComplaintFiled": "10/26/2026",
+   "vin": "",
+   "components": "UNKNOWN OR OTHER",
+   "summary": "The door lock on passenger side does not engage or stay locked",
+   "products": [
+    {
+     "type": "Vehicle",
+     "productYear": "2021",
+     "productMake": "TOYOTA",
+     "productModel": "CAMRY",
+     "manufacturer": "Toyota Motor Corporation"
+    }
+   ]
+  },
+  {
+   "odiNumber": 11766822,
+   "manufacturer": "Toyota Motor Corporation",
+   "crash": false,
+   "fire": false,
+   "numberOfInjuries": 0,
+   "numberOfDeaths": 0,
+   "dateOfIncident": "02/10/2026",
+   "dateComplaintFiled": "09/24/2026",
+   "vin": "",
+   "components": "POWER TRAIN",
+   "summary": "I took it to a repair shop for a transmission issue, the technician noted the transmission fluid degraded or burnt fluid or And it is causing the torque converter shudder and transmission rpm to slip",
+   "products": [
+    {
+     "type": "Vehicle",
+     "productYear": "2021",
+     "productMake": "TOYOTA",
+     "productModel": "CAMRY",
+     "manufacturer": "Toyota Motor Corporation"
+    }
+   ]
+  },
+  {
+   "odiNumber": 11763848,
+   "manufacturer": "Toyota Motor Corporation",
+   "crash": false,
+   "fire": false,
+   "numberOfInjuries": 0,
+   "numberOfDeaths": 0,
+   "dateOfIncident": "08/25/2026",
+   "dateComplaintFiled": "09/12/2026",
+   "vin": "",
+   "components": "ENGINE",
+   "summary": "Power loss, had to pull off road. multiple fault codes on this event. 2 broken plastic parts in intake duct, one stuck in throttle body butterfly. cleared plastic parts from intake to get home. Later determined 2 of 4 intake resonator tube internal catch bevels broke off. The remaining 2 were very weak and easily broke off as well. Serious FOD hazard to engine!",
+   "products": [
+    {
+     "type": "Vehicle",
+     "productYear": "2021",
+     "productMake": "TOYOTA",
+     "productModel": "CAMRY",
+     "manufacturer": "Toyota Motor Corporation"
+    }
+   ]
+  },
+  {
+   "odiNumber": 11757888,
+   "manufacturer": "Toyota Motor Corporation",
+   "crash": true,
+   "fire": false,
+   "numberOfInjuries": 1,
+   "numberOfDeaths": 0,
+   "dateOfIncident": "08/12/2026",
+   "dateComplaintFiled": "08/19/2026",
+   "vin": "",
+   "components": "AIR BAGS",
+   "summary": "The contact owns a 2021 Toyota Camry. The contact stated that while driving approximately 40 MPH, a second vehicle T-boned the vehicle while driving approximately 60 MPH and crashed into the driver\u2019s side of the vehicle. During the crash, no air bags had deployed inside the vehicle, including the side curtain air bags. Police and Emergency Services were called to the scene. The contact had to be extracted from the vehicle and was transported to a nearby hospital. During the crash, the contact sustained a concussion and left hip and left torso injuries. A Police report was filed at the scene, and the vehicle was towed to a nearby salvage yard. The cause of the failure was not yet determined. The manufacturer and local dealer were not yet contacted. The failure mileage was 83,000.",
+   "products": [
+    {
+     "type": "Vehicle",
+     "productYear": "2021",
+     "productMake": "TOYOTA",
+     "productModel": "CAMRY",
+     "manufacturer": "Toyota Motor Corporation"
+    }
+   ]
+  },
+  {
+   "odiNumber": 11750599,
+   "manufacturer": "Toyota Motor Corporation",
+   "crash": false,
+   "fire": false,
+   "numberOfInjuries": 0,
+   "numberOfDeaths": 0,
+   "dateOfIncident": "06/24/2026",
+   "dateComplaintFiled": "07/15/2026",
+   "vin": "",
+   "components": "AIR BAGS",
+   "summary": "I went to a toyota dealership June 24th to have my car checked for the airbag recall. They told me my car did have the recall on it and that they would have to order the part. I haven't heard anything from them at all.",
+   "products": [
+    {
+     "type": "Vehicle",
+     "productYear": "2021",
+     "productMake": "TOYOTA",
+     "productModel": "CAMRY",
+     "manufacturer": "Toyota Motor Corporation"
+    }
+   ]
+  },
+  {
+   "odiNumber": 11748945,
+   "manufacturer": "Toyota Motor Corporation",
+   "crash": false,
+   "fire": false,
+   "numberOfInjuries": 0,
+   "numberOfDeaths": 0,
+   "dateOfIncident": "05/18/2026",
+   "dateComplaintFiled": "07/07/2026",
+   "vin": "",
+   "components": "TIRES",
+   "summary": "Component failed: Falken tire size 235/40R19. The tire was manually over-inflated to a life-threatening 91 PSI by the service facility. It is currently available for inspection upon request.Safety risk: Upon driving onto public Highway 79, the extreme over-inflation caused the vehicle to immediately exhibit violent structural shaking and pull aggressively toward the ditch, creating an imminent danger of handling failure and a high-speed collision.Confirmation: The vehicle safety defect and inflation failure were officially confirmed and documented via a physical inspection by certified dealer Round Rock Toyota (Service Advisor Bryan Sanders).Symptoms: Extreme, immediate physical steering wheel vibration and severe vehicle pulling. They intentionally put a critical care patient out on the road with a tire turned into a bomb and then destroyed the CCTV footage.",
+   "products": [
+    {
+     "type": "Vehicle",
+     "productYear": "2021",
+     "productMake": "TOYOTA",
+     "productModel": "CAMRY",
+     "manufacturer": "Toyota Motor Corporation"
+    },
+    {
+     "type": "Tire",
+     "productYear": "9999",
+     "productMake": "UNKNOWN",
+     "productModel": "UNKNOWN",
+     "size": null,
+     "manufacturer": "UNKNOWN MANUFACTURER"
+    }
+   ]
+  },
+  {
+   "odiNumber": 11747464,
+   "manufacturer": "Toyota Motor Corporation",
+   "crash": false,
+   "fire": false,
+   "numberOfInjuries": 0,
+   "numberOfDeaths": 0,
+   "dateOfIncident": "06/12/2026",
+   "dateComplaintFiled": "06/30/2026",
+   "vin": "",
+   "components": "STRUCTURE",
+   "summary": "2021 Camry with 29,000 miles panoramic roof is stuck in the vent position.  Took it to two different automotive shops and was told they could not close the vent.  The concern was too much pressure on the glass could cause it to shatter if they forced it to close.  The recommended repair was to replace the entire sunroof assembly.  A private auto garage quoted almost $15,000 to repair.  Toyota confirmed the original diagnosis and quoted $10,600 plus tax.  If the glass shatters, it obviously is a safety risk.  Currently, the car is unusable as is.  Two automotive centers confirmed the diagnosis.  No warnings, the sunroof stopped responding. When googling, it appears many Camry owners have had the same issue.  Contacted Toyota and was denied any assistance. The car has never been in an accident so it is hard to understand why there would be a bent mechanism other than a quality issue.  Both diagnosis invoices are available upon request.",
+   "products": [
+    {
+     "type": "Vehicle",
+     "productYear": "2021",
+     "productMake": "TOYOTA",
+     "productModel": "CAMRY",
+     "manufacturer": "Toyota Motor Corporation"
+    }
+   ]
+  },
+  {
+   "odiNumber": 11740908,
+   "manufacturer": "Toyota Motor Corporation",
+   "crash": false,
+   "fire": false,
+   "numberOfInjuries": 0,
+   "numberOfDeaths": 0,
+   "dateOfIncident": "05/04/2026",
+   "dateComplaintFiled": "05/29/2026",
+   "vin": "",
+   "components": "VEHICLE SPEED CONTROL,SERVICE BRAKES",
+   "summary": "Vehicle Information: \u2022 Year/Make/Model: 2021 Toyota Camry \u2022 VIN: [XXX]   Incident Date: May 4, [2025] Incident Time: Approximately 9:45 AM Incident Location: [XXX]  toward [XXX]   Description of Incident: While driving at approximately 25 MPH, multiple dashboard warning lights suddenly illuminated simultaneously. Immediately after, the vehicle began to accelerate on its own without any input from the driver. The driver applied the brakes repeatedly and forcefully, but the vehicle did not respond to braking. The car continued to accelerate uncontrollably until it abruptly stopped directly in front of another vehicle, narrowly avoiding a serious collision.  INFORMATION REDACTED PURSUANT TO THE FREEDOM OF INFORMATION ACT (FOIA), 5 U.S.C. 552(B)(6)",
+   "products": [
+    {
+     "type": "Vehicle",
+     "productYear": "2021",
+     "productMake": "TOYOTA",
+     "productModel": "CAMRY",
+     "manufacturer": "Toyota Motor Corporation"
+    }
+   ]
+  }
+ ]
+}

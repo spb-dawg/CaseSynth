@@ -1,0 +1,16 @@
+{
+ "Count": 1,
+ "Results": [
+  {
+   "Make": "TOYOTA",
+   "Model": "Camry",
+   "ModelYear": "2021",
+   "Manufacturer": "TOYOTA MOTOR MANUFACTURING, KENTUCKY, INC.",
+   "BodyClass": "Sedan/Saloon",
+   "VehicleType": "PASSENGER CAR",
+   "GVWR": "Class 1C: 4,001 - 5,000 lb (1,814 - 2,268 kg)",
+   "ErrorCode": "0",
+   "ErrorText": "0 - VIN decoded clean. Check Digit (9th position) is correct"
+  }
+ ]
+}

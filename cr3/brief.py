@@ -49,7 +49,51 @@ def _code(value):
     return value["code"] if isinstance(value, dict) else value
 
 
-def render_brief(decoded: DecodedReport, flags: list[Flag], client_unit: int | None = None) -> str:
+def _outside_records(lookups: list[dict]) -> list[str]:
+    out = ["## Outside records", "",
+           "From NHTSA (vehicles) and FMCSA (carriers), looked up by the VIN and USDOT number on the report. "
+           "Recalls and complaints are for the make, model and year, not this specific vehicle.", ""]
+    for rec in lookups:
+        out += [f"**Unit {rec['unit_num']}**", ""]
+        v, c = rec.get("vin"), rec.get("carrier")
+        if v:
+            decoded_as = " ".join(str(x) for x in (v["year"], v["make"], v["model"]) if x) or "not decoded"
+            out.append(f"- **VIN {v['vin']}:** {decoded_as}"
+                       + (f", {v['body_class']}" if v["body_class"] else "")
+                       + (f", {v['gvwr_class']}" if v["gvwr_class"] else "")
+                       + ("" if v["clean"] else f". **NHTSA warning: {v['error_text']}**"))
+        for r in rec.get("recalls") or []:
+            out.append(f"- **Recall {r['campaign']}** ({r['received']}), {r['component']}: {r['summary']}"
+                       + (f" Consequence: {r['consequence']}" if r["consequence"] else ""))
+        comp = rec.get("complaints")
+        if comp and comp["total"]:
+            top = "; ".join(f"{name} ({count})" for name, count in comp["by_component"][:5])
+            out.append(f"- **Owner complaints to NHTSA:** {comp['total']} filed, {comp['with_crash']} involving a crash, "
+                       f"{comp['with_fire']} a fire, {comp['injuries']} injuries, {comp['deaths']} deaths. Most common: {top}.")
+        if "carrier" in rec and c is None:
+            out.append(f"- **Carrier:** no FMCSA record for USDOT {rec['carrier_searched']}.")
+        elif c:
+            out += _rows([
+                ("Carrier", f"{c['legal_name']}" + (f" (DBA {c['dba_name']})" if c["dba_name"] else "") + f", USDOT {c['usdot']}"),
+                ("Address", c["address"]), ("USDOT status", c["usdot_status"]),
+                ("Operating authority", c["operating_authority"]), ("MC numbers", ", ".join(c["mc_numbers"])),
+                ("Fleet", f"{c['power_units']} power units, {c['drivers']} drivers"),
+                ("Safety rating", c["safety_rating"] or "none on file"),
+            ])
+            for kind, i in c["inspections"].items():
+                out.append(f"- **{kind.capitalize()} inspections, 24 months to {c['as_of']}:** {i['count']}, "
+                           f"{i['out_of_service']} out of service ({i['oos_rate']}%; national average {i['national_oos_rate']}%)")
+            cr = c["crashes"]
+            out.append(f"- **Reported crashes, same period:** {cr['total']} ({cr['fatal']} fatal, {cr['injury']} injury, "
+                       f"{cr['tow']} tow-away). Involvement only, no finding of fault.")
+        for error in rec["errors"]:
+            out.append(f"- **Lookup did not complete:** {error}")
+        out.append("")
+    return out
+
+
+def render_brief(decoded: DecodedReport, flags: list[Flag], client_unit: int | None = None,
+                 lookups: list[dict] | None = None) -> str:
     r = decoded.data
     ident, crash = r.get("identifiers", {}), r.get("crash", {})
     out = [f"# Crash report brief: {ident.get('crash_id') or ident.get('case_id') or 'unidentified report'}", ""]
@@ -146,6 +190,9 @@ def render_brief(decoded: DecodedReport, flags: list[Flag], client_unit: int | N
         out.append("")
     if r.get("narrative"):
         out += ["## Officer's narrative", "", "> " + r["narrative"].strip().replace("\n", "\n> "), ""]
+
+    if lookups:
+        out += _outside_records(lookups)
 
     inv = r.get("investigator", {})
     if inv:

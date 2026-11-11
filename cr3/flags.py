@@ -317,8 +317,12 @@ def find_flags(decoded: DecodedReport, client_unit: int | None = None, as_of: da
     if any(u.get("cmv") and u.get("unit_num") != client_unit for u in units):
         flags.append(_deadline("driver_logs", r, as_of, ["crash.date"]))
 
+    return sort_flags(f for f in flags if f)
+
+
+def sort_flags(flags) -> list[Flag]:
     order = {"dealbreaker": 0, "builder": 1, "fact": 2, "deadline": 3, "verify": 4}
-    return sorted((f for f in flags if f), key=lambda f: (order[f.kind], f.due or date.max))
+    return sorted(flags, key=lambda f: (order[f.kind], f.due or date.max))
 
 
 def _norm(name: str) -> str:

@@ -1,0 +1,16 @@
+{
+ "Count": 1,
+ "Results": [
+  {
+   "Make": "KENWORTH",
+   "Model": "T680",
+   "ModelYear": "2019",
+   "Manufacturer": "KENWORTH TRUCK COMPANY",
+   "BodyClass": "Truck-Tractor",
+   "VehicleType": "TRUCK",
+   "GVWR": "Class 8: 33,001 lb and above (14,969 kg and above)",
+   "ErrorCode": "0",
+   "ErrorText": "0 - VIN decoded clean. Check Digit (9th position) is correct"
+  }
+ ]
+}

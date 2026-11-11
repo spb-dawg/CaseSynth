@@ -1,4 +1,4 @@
-"""Command line: python -m cr3 report.json [--client-unit N] [--as-of YYYY-MM-DD] [--json]"""
+"""Command line: python -m cr3 report.json [--client-unit N] [--as-of YYYY-MM-DD] [--lookups] [--json]"""
 from __future__ import annotations
 
 import argparse
@@ -7,7 +7,8 @@ import sys
 
 from .brief import render_brief
 from .decode import decode
-from .flags import find_flags, parse_date
+from .flags import find_flags, parse_date, sort_flags
+from .lookups import enrich, lookup_flags
 
 
 def main(argv=None) -> int:
@@ -15,6 +16,8 @@ def main(argv=None) -> int:
     ap.add_argument("report", help="path to a structured CR-3 record (JSON); see README.md")
     ap.add_argument("--client-unit", type=int, help="unit number of the firm's client")
     ap.add_argument("--as-of", help="date to count deadlines from (default: today)")
+    ap.add_argument("--lookups", action="store_true",
+                    help="look up VINs (NHTSA) and USDOT numbers (FMCSA) online; sends only those numbers")
     ap.add_argument("--json", action="store_true", help="output decoded data and flags as JSON instead of Markdown")
     args = ap.parse_args(argv)
 
@@ -30,10 +33,12 @@ def main(argv=None) -> int:
     if args.as_of and as_of is None:
         ap.error("--as-of must be YYYY-MM-DD")
     flags = find_flags(decoded, client_unit=args.client_unit, as_of=as_of)
+    lookups = enrich(decoded) if args.lookups else []
+    flags = sort_flags(flags + lookup_flags(decoded, lookups, client_unit=args.client_unit))
     if args.json:
-        json.dump({"decoded": decoded.data, "flags": [f.as_dict() for f in flags]}, sys.stdout, indent=1)
+        json.dump({"decoded": decoded.data, "flags": [f.as_dict() for f in flags], "lookups": lookups}, sys.stdout, indent=1)
     else:
-        sys.stdout.write(render_brief(decoded, flags, client_unit=args.client_unit))
+        sys.stdout.write(render_brief(decoded, flags, client_unit=args.client_unit, lookups=lookups))
     return 0
 
 
