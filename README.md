@@ -106,6 +106,12 @@ Contributing factors and vehicle defects are separate lists because they use
 separate code tables: code 14 is "Disabled in Traffic Lane" as a factor and
 "Automation Failure" as a defect.
 
+## Working on CaseSynth
+
+Work is planned by a Mission Control session and built by worker sessions. The standing
+prompt, model choices and naming scheme are in `docs/MISSION_CONTROL.md`; plans live in
+`docs/plans/`.
+
 ## Rebuilding the code tables
 
 ```
