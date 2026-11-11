@@ -32,10 +32,22 @@ fact in the brief is sourced from a confirmed shape.
 
 | Title | Model / effort | Session ID | Branch | Spawned | Status | Result |
 |---|---|---|---|---|---|---|
-| W  2026-11-11 lookups · confirm qc api fixtures against live responses | `claude-opus-5-5` / high | `session_01PBtJpuBzVTXVDAHTx8XWr7` | `w/2026-11-11-lookups-confirm-qc-api-fixtures` (platform-assigned outcome branch, same as intended) built on `claude/festive-hopper-ue4t8e` | 2026-11-11 13:36 CST | running | — |
+| W  2026-11-11 lookups · confirm qc api fixtures against live responses | `claude-opus-5-5` / high | `session_01PBtJpuBzVTXVDAHTx8XWr7` | `w/2026-11-11-lookups-confirm-qc-api-fixtures` (platform-assigned outcome branch, same as intended) built on `claude/festive-hopper-ue4t8e` | 2026-11-11 13:36 CST | done, reviewed, archived | Commit `1abec0b`: 6 files, +133/−28. Live shape confirmed; fixtures real; 62 tests OK. MC recommends merge. |
 
 ## Log (newest first)
 
+- 2026-11-11 13:50 MC review (section 5) of `w/2026-11-11-lookups-confirm-qc-api-fixtures` @ `1abec0b`:
+  read the full diff, the three fixtures and the worker transcript. Diff is confined to `cr3/lookups/fmcsa.py`
+  (`parse_api` only), `tests/test_lookups.py`, the three `qc_*` fixtures and `tests/fixtures/README.md`.
+  Record shape unchanged. Transcript shows a test-first sequence (failures, then fixes) ending in
+  `Ran 62 tests ... OK`, twice. No key or `webKey=` URL in any committed file; the only `webKey=` hits are the
+  pre-existing URL templates and the test's fake key. **Recommendation to owner: ready to merge.**
+- 2026-11-11 13:43 Worker reported done. Findings against the hand-built fixtures (every key name matched;
+  differences were values and formats): OOS rates arrive unrounded (now rounded to one decimal, half-up, as
+  SAFER shows them; checked against live SAFER for 9 rates); `snapshotDate` is always null so `as_of` is the
+  retrieval date; `mcs150Outdated` "N" was misread as None (now False); docket list carries `FF` numbers;
+  insurance amounts are strings in thousands (parser already right); not-found is HTTP 200 with
+  `"content": null` (parser already right). Three tests added, two adjusted, reasons in the test comments.
 - 2026-11-11 13:37 Plan file created; MC waiting for the worker's `send_message` report (no polling).
 - 2026-11-11 13:36 Spawned worker `session_01PBtJpuBzVTXVDAHTx8XWr7` on Opus / high. Prompt
   follows the section 4 template: five numbered steps (live calls saved to scratchpad, field-by-field
@@ -45,12 +57,37 @@ fact in the brief is sourced from a confirmed shape.
   `docs/MISSION_CONTROL.md`, `README.md`, `docs/plans/TEMPLATE.md`, `tests/fixtures/README.md`,
   and skimmed function and test names in `cr3/lookups/fmcsa.py` and `tests/test_lookups.py`.
 
+## Findings needing an owner decision (from the worker, 2026-11-11; nothing changed yet)
+
+- **A. Stale national average on the API path.** The API's `*OosRateNationalAverage` figures (20.72 / 5.51 /
+  4.5) are labelled `oosRateNationalAverageYear: "2009-2010"`. The SAFER page for the same carriers shows
+  22.26 / 6.67 / 4.44 dated 10/30/2026. The brief and the above-average flag print the API figure as if
+  current. The record has no field for the year. Options: use SAFER's current averages on the API path;
+  carry the year in the text; or accept and note it. Touches flags/brief, so a new Opus worker.
+- **B. `as_of` on the API path is the retrieval date**, because `snapshotDate` is always null; SAFER dates the
+  same data to its monthly snapshot (11/09/2026). The brief's "24 months to <date>" is off by days.
+- **C. `allowedToOperate` is "Y" for INACTIVE carriers** (seen on three live small carriers). The brief and
+  flags correctly use `usdot_status`; do not build on `allowed_to_operate`.
+
+## Outside-scope findings (from the worker; candidates for later workers)
+
+- **SAFER fallback parser bug with a reproduction.** Any carrier with an empty DBA name fails
+  `parse_snapshot` ("layout was not recognised"): the page text reads `DBA Name: Physical Address:` with one
+  space and the regex needs two. Live reproductions: USDOT 53467 (Werner) and 264184 (Schneider). On the
+  no-key or API-failure path every such carrier becomes a failed lookup. Bounded bug with a reproduction:
+  Sonnet, test first.
+- The two sources word the same fields differently (date formats, `entity_type`, `operating_authority`,
+  address comma), so the brief's wording changes with the source.
+- SAFER lists only MC numbers; the API docket list also has FF numbers.
+- Not seen live, so unconfirmed: `oosDate` format, safety ratings "C"/"U", a docket row without a prefix,
+  non-404 API error bodies, exact `.x5` rounding ties, BIPD amounts against FMCSA's L&I system.
+
 ## Open questions for the owner
 
-- If the live not-found answer turns out to be an HTTP error rather than 200 with null content,
-  `carrier_record` may currently treat it as an API failure and fall back to SAFER (which also
-  reports not found). Acceptable, or should the brief distinguish "API says no such carrier" from
-  "API unreachable"? The worker is told to report what it finds, not to decide this.
+- Merge `w/2026-11-11-lookups-confirm-qc-api-fixtures` into `claude/festive-hopper-ue4t8e` (or the main line)?
+  MC recommends yes.
+- Which of findings A, B, C above should become the next worker, and should the SAFER DBA regex bug be
+  bundled into it or run separately on Sonnet?
 - After this worker lands, the next trust item in the standing priorities is PDF intake, which
   needs real sample CR-3 reports before a parser can be planned. Do you have, or can you obtain,
   redacted sample reports?
