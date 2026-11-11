@@ -17,6 +17,7 @@ from __future__ import annotations
 import html
 import json
 import re
+from decimal import ROUND_HALF_UP, Decimal
 
 from .http import HttpError, LookupFailed, quote
 
@@ -114,6 +115,14 @@ def _num(value, kind=float):
         return None
 
 
+def _rate(value) -> float:
+    """An out-of-service rate to one decimal, as the SAFER page shows it.
+
+    The API sends the unrounded quotient (22.406190947538917); the page shows 22.4.
+    """
+    return float(Decimal(repr(float(value))).quantize(Decimal("0.1"), rounding=ROUND_HALF_UP))
+
+
 def _authority_text(c: dict) -> str:
     """Reduce the API's three authority status letters to SAFER's wording."""
     statuses = {k: (c.get(f"{k}AuthorityStatus") or "N").upper() for k in ("common", "contract", "broker")}
@@ -155,15 +164,17 @@ def parse_api(body: str, dockets: str | None = None) -> dict | None:
     status = (c.get("statusCode") or "").strip().upper()
     address = ", ".join(p for p in (c.get("phyStreet"), c.get("phyCity"),
                                     " ".join(q for q in (c.get("phyState"), c.get("phyZipcode")) if q)) if p)
+    # snapshotDate was null in every live answer seen (2026-11-11), so this is normally the retrieval date.
     as_of = (c.get("snapshotDate") or data.get("retrievalDate") or "")[:10] or None
     census = c.get("censusTypeId") or {}
 
     def inspections(kind):
         count = _num(c.get(f"{kind}Insp"), int) or 0
         oos = _num(c.get(f"{kind}OosInsp"), int) or 0
-        rate = _num(c.get(f"{kind}OosRate"))
-        return {"count": count, "out_of_service": oos,
-                "oos_rate": rate if rate is not None else (round(100 * oos / count, 2) if count else 0.0),
+        rate = _num(c.get(f"{kind}OosRate"))  # a number; 0 when there were no inspections
+        if rate is None:
+            rate = 100 * oos / count if count else 0.0
+        return {"count": count, "out_of_service": oos, "oos_rate": _rate(rate),
                 "national_oos_rate": _num(c.get(f"{kind}OosRateNationalAverage"))}
 
     insurance = None
@@ -196,7 +207,7 @@ def parse_api(body: str, dockets: str | None = None) -> dict | None:
         "safety_rating": SAFETY_RATINGS.get(rating.upper(), rating) if rating else None,
         "rating_date": (c.get("safetyRatingDate") or None) and str(c["safetyRatingDate"])[:10],
         "insurance": insurance,
-        "mcs150_outdated": (c.get("mcs150Outdated") or "").upper() == "Y" or None,
+        "mcs150_outdated": {"Y": True, "N": False}.get((c.get("mcs150Outdated") or "").upper()),
     }
 
 

@@ -95,20 +95,64 @@ class CarrierApi(unittest.TestCase):
         for field in ("legal_name", "dba_name", "usdot", "usdot_status", "out_of_service_date", "power_units",
                       "drivers", "crashes", "safety_rating"):
             self.assertEqual(api[field], page[field], field)
-        self.assertEqual(api["inspections"]["vehicle"], page["inspections"]["vehicle"])
+        for kind in fmcsa.KINDS:
+            for field in ("count", "out_of_service", "oos_rate"):
+                self.assertEqual(api["inspections"][kind][field], page["inspections"][kind][field], (kind, field))
+        # Confirmed live on 2026-11-11: the two sources give different national averages. The API's are labelled
+        # oosRateNationalAverageYear "2009-2010"; the page's are dated 10/30/2026. Each record keeps its source's figure.
+        self.assertEqual([api["inspections"][k]["national_oos_rate"] for k in fmcsa.KINDS], [20.72, 5.51, 4.5])
+        self.assertEqual([page["inspections"][k]["national_oos_rate"] for k in fmcsa.KINDS], [22.26, 6.67, 4.44])
         self.assertEqual(api["source"], fmcsa.SOURCE_API)
         self.assertEqual(page["source"], fmcsa.SOURCE_SAFER)
 
     def test_api_only_fields(self):
         c = fmcsa.carrier_api("1234567", fake_fetch(), KEY)
-        self.assertEqual(c["mc_numbers"], ["MC-123456", "MC-654321"])
+        self.assertEqual(c["mc_numbers"], ["MC-123456", "FF-654321"])  # the docket list carries FF numbers too
         self.assertEqual(c["operating_authority"], "AUTHORIZED (common carrier, broker)")
         self.assertEqual(c["rating_date"], "2024-03-14")
-        self.assertEqual(c["as_of"], "2026-11-09")
+        self.assertEqual(c["as_of"], "2026-11-11")  # snapshotDate is null in live answers, so the retrieval date
+        self.assertIs(c["mcs150_outdated"], False)  # "N"
         self.assertIsNone(c["total_inspections"])
         self.assertEqual(c["insurance"], {"bipd_required": True, "bipd_required_amount": 750000, "bipd_on_file": 750000,
                                           "cargo_on_file": 0, "bond_on_file": 0})
         self.assertTrue(c["allowed_to_operate"])
+
+    def test_rates_are_rounded_like_the_snapshot_page(self):
+        # Live answers send unrounded rates; SAFER shows one decimal. Pairs are J.B. Hunt's 2026-11-11 API rates
+        # and the page's figures for the same carrier.
+        data = json.loads(fixture("qc_carrier.json"))
+        c = data["content"]["carrier"]
+        c.update(vehicleOosRate=22.406190947538917, driverOosRate=0.7706748345025195, hazmatInsp=692,
+                 hazmatOosInsp=8, hazmatOosRate=1.1560693641618498)
+        record = fmcsa.parse_api(json.dumps(data))
+        self.assertEqual([record["inspections"][k]["oos_rate"] for k in fmcsa.KINDS], [22.4, 0.8, 1.2])
+        self.assertEqual(fmcsa.carrier_api("1234567", fake_fetch(), KEY)["inspections"]["driver"]["oos_rate"], 10.2)
+        del c["driverOosRate"]  # no rate sent: computed from the counts (9 of 88), rounded the same way
+        self.assertEqual(fmcsa.parse_api(json.dumps(data))["inspections"]["driver"]["oos_rate"], 10.2)
+
+    def test_snapshot_date_is_used_when_present(self):
+        data = json.loads(fixture("qc_carrier.json"))
+        data["content"]["carrier"]["snapshotDate"] = "2026-11-09"
+        self.assertEqual(fmcsa.parse_api(json.dumps(data))["as_of"], "2026-11-09")
+
+    def test_small_unrated_carrier_with_nulls(self):
+        # The nulls a live answer sends for a small private carrier: no authority, no insurance, no rating, no census type.
+        data = json.loads(fixture("qc_carrier.json"))
+        c = data["content"]["carrier"]
+        for k in ("commonAuthorityStatus", "contractAuthorityStatus", "brokerAuthorityStatus", "bipdInsuranceRequired",
+                  "bipdRequiredAmount", "bipdInsuranceOnFile", "cargoInsuranceOnFile", "bondInsuranceOnFile",
+                  "safetyRating", "safetyRatingDate", "censusTypeId", "dbaName"):
+            c[k] = None
+        c.update(vehicleInsp=0, vehicleOosInsp=0, vehicleOosRate=0, driverInsp=2, driverOosInsp=0, driverOosRate=0)
+        record = fmcsa.parse_api(json.dumps(data))
+        self.assertIsNone(record["insurance"])
+        self.assertIsNone(record["safety_rating"])
+        self.assertIsNone(record["rating_date"])
+        self.assertIsNone(record["entity_type"])
+        self.assertIsNone(record["dba_name"])
+        self.assertEqual(record["operating_authority"], "NOT AUTHORIZED (no authority on file)")
+        self.assertEqual(record["inspections"]["vehicle"], {"count": 0, "out_of_service": 0, "oos_rate": 0.0,
+                                                           "national_oos_rate": 20.72})
 
     def test_authority_wording(self):
         text = lambda **kw: fmcsa._authority_text({f"{k}AuthorityStatus": v for k, v in kw.items()})

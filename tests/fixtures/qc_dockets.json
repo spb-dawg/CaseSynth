@@ -1,7 +1,22 @@
 {
   "content": [
-    {"docketNumber": 123456, "docketNumberId": 1, "dotNumber": 1234567, "prefix": "MC"},
-    {"docketNumber": 654321, "docketNumberId": 2, "dotNumber": 1234567, "prefix": "MC"}
+    {
+      "docketNumber": 123456,
+      "docketNumberId": 1,
+      "dotNumber": 1234567,
+      "prefix": "MC"
+    },
+    {
+      "docketNumber": 654321,
+      "docketNumberId": 2,
+      "dotNumber": 1234567,
+      "prefix": "FF"
+    }
   ],
-  "retrievalDate": "2026-11-11T19:21:30.412+0000"
+  "retrievalDate": "2026-11-11T19:37:18.988+0000",
+  "_links": {
+    "self": {
+      "href": "https://mobile.fmcsa.dot.gov/qc/services/carriers/1234567/mc-numbers"
+    }
+  }
 }
