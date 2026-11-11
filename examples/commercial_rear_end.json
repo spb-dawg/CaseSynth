@@ -1,0 +1,68 @@
+{
+  "_note": "Fictional report written to exercise the decoder. No real people, companies or crash.",
+  "form_version": "2023",
+  "identifiers": {"crash_id": "EXAMPLE-0001", "case_id": "SAPD-EX-26-000123", "fatal": false, "cmv": true,
+                  "school_bus": false, "supplement": false, "active_school_zone": false,
+                  "total_units": 3, "total_persons": 3},
+  "crash": {
+    "date": "2026-10-02", "time": "1742", "county": "Bexar", "city": "San Antonio",
+    "road": {"roadway_system": "IH", "hwy_num": "35", "roadway_part": "1", "direction_of_traffic": "N",
+             "speed_limit": 65, "construction_zone": true, "workers_present": false},
+    "intersecting_road": {"at_intersection": false, "roadway_system": "LR", "street_name": "EXAMPLE",
+                          "street_suffix": "RD", "distance": 400, "unit": "FT", "direction_from_intersection": "S"}
+  },
+  "units": [
+    {
+      "unit_num": 1, "unit_desc": "1", "parked": false, "hit_and_run": false,
+      "lp_state": "TX", "lp_num": "EX4MPL1", "vin": "1XKEXAMPLE0000001", "veh_year": 2019, "veh_color": "WHI",
+      "veh_make": "KENWORTH", "veh_model": "T680", "body_style": "TT", "autonomous_unit": "2", "autonomous_level": "0",
+      "driver_license": {"type": "2", "state": "TX", "class": "A", "endorsements": ["N"], "restrictions": ["A", "K"]},
+      "owner_lessee": {"role": "owner", "name": "EXAMPLE FREIGHT LINES LLC", "address": "100 EXAMPLE PKWY, LAREDO, TX"},
+      "fin_resp": {"proof": "yes", "type": "1", "name": "EXAMPLE COMMERCIAL INSURANCE CO", "number": "EX-CA-000111"},
+      "damage_ratings": ["12-FD-3"],
+      "persons": [{"person_num": 1, "type": "1", "seat": "1", "name": "DOE, JOHN Q", "age": 47,
+                   "injury_severity": "N", "ethnicity": "W", "sex": "1", "ejected": "1", "restraint": "1",
+                   "airbag": "1", "helmet": "97", "solicitation": "N", "alcohol_specimen": "96",
+                   "drug_specimen": "96", "drug_result": "97", "drug_category": "97"}],
+      "cmv": {"class_10001_lbs": true, "hazmat": false, "capacity_9_plus": false, "disabling_damage": false,
+              "vehicle_operation": "1", "carrier_id_type": "1", "carrier_id_num": "0000000",
+              "carrier_name": "EXAMPLE FREIGHT LINES LLC", "carrier_address": "100 EXAMPLE PKWY, LAREDO, TX",
+              "vehicle_type": "9", "bus_type": "0", "gvwr": 80000, "hazmat_released": false,
+              "cargo_body_type": "3", "sequence_of_events": ["13"], "total_axles": 5,
+              "trailers": [{"unit_num": 2, "gvwr": 65000, "type": "2"}]},
+      "factors": {"contributing": ["22", "20"], "may_have_contributed": ["40"],
+                  "defects_contributing": [], "defects_may_have_contributed": ["10"]}
+    },
+    {
+      "unit_num": 2, "unit_desc": "6", "parked": false, "hit_and_run": false, "body_style": "TL",
+      "lp_state": "TX", "lp_num": "EXTRL01", "veh_year": 2017, "veh_make": "UTILITY",
+      "owner_lessee": {"role": "owner", "name": "EXAMPLE FREIGHT LINES LLC"},
+      "persons": []
+    },
+    {
+      "unit_num": 3, "unit_desc": "1", "parked": false, "hit_and_run": false,
+      "lp_state": "TX", "lp_num": "EX4MPL3", "vin": "4T1EXAMPLE0000003", "veh_year": 2021, "veh_color": "SIL",
+      "veh_make": "TOYOTA", "veh_model": "CAMRY", "body_style": "P4", "autonomous_unit": "2", "autonomous_level": "0",
+      "driver_license": {"type": "1", "state": "TX", "class": "C", "endorsements": ["96"], "restrictions": ["96"]},
+      "owner_lessee": {"role": "owner", "name": "ROE, JANE A"},
+      "fin_resp": {"proof": "yes", "type": "1", "name": "EXAMPLE MUTUAL", "number": "EX-PA-000333"},
+      "damage_ratings": ["6-BD-5"], "towed_to": "EXAMPLE TOWING",
+      "persons": [
+        {"person_num": 1, "type": "1", "seat": "1", "name": "ROE, JANE A", "age": 34, "injury_severity": "A",
+         "ethnicity": "H", "sex": "2", "ejected": "1", "restraint": "1", "airbag": "5", "helmet": "97",
+         "solicitation": "N", "alcohol_specimen": "96", "drug_specimen": "96", "drug_result": "97", "drug_category": "97"},
+        {"person_num": 2, "type": "2", "seat": "3", "name": "ROE, SAM", "age": 9, "injury_severity": "C",
+         "ethnicity": "H", "sex": "1", "ejected": "1", "restraint": "7", "airbag": "1", "helmet": "97",
+         "solicitation": "N", "alcohol_specimen": "96", "drug_specimen": "96", "drug_result": "97", "drug_category": "97"}
+      ],
+      "factors": {"contributing": [], "may_have_contributed": []}
+    }
+  ],
+  "disposition": [{"unit_num": 3, "person_num": 1, "taken_to": "EXAMPLE UNIVERSITY HOSPITAL", "taken_by": "SAFD EMS"}],
+  "charges": [{"unit_num": 1, "person_num": 1, "charge": "FAILED TO CONTROL SPEED", "citation": "EX123456"}],
+  "conditions": {"weather": "1", "light": "1", "entering_roads": "97", "roadway_type": "3",
+                 "roadway_alignment": "1", "surface_condition": "1", "traffic_control": "17"},
+  "narrative": "Unit 3 was stopped in traffic in the construction zone. Unit 1 towing Unit 2 failed to control speed and struck Unit 3 from behind. Driver of Unit 1 stated he had been driving since early morning. A witness in a following vehicle provided dash cam video.",
+  "investigator": {"name": "OFFICER EXAMPLE", "id": "0000", "agency": "SAN ANTONIO POLICE DEPARTMENT",
+                   "report_date": "2026-10-03", "investigation_complete": true}
+}

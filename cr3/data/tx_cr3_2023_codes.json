@@ -1,0 +1,796 @@
+{
+ "form": "Texas Peace Officer's Crash Report (CR-3)",
+ "form_version": "2023",
+ "source": "TxDOT CR-100 Instructions to Police for Reporting Crashes, version 29.0 (2025)",
+ "source_url": "https://www.txdot.gov/content/dam/docs/division/trf/crash-records/cr100-v29.pdf",
+ "tables": {
+  "roadway_system": {
+   "code_sheet": 1,
+   "values": {
+    "IH": "Interstate",
+    "BI": "Business Interstate",
+    "AL": "Alternate",
+    "US": "US Highway",
+    "BU": "Business US",
+    "SP": "Spur",
+    "SH": "State Highway",
+    "BS": "Business State",
+    "CR": "County Road",
+    "FM": "Farm to Market",
+    "BF": "Business FM",
+    "PR": "Park Road",
+    "RR": "Ranch Road",
+    "SL": "State Loop",
+    "PV": "Private Road",
+    "RM": "Ranch to Market",
+    "TL": "Toll Road",
+    "RC": "Recreational Road",
+    "LR": "Local Road/Street (Street, Rd., Ave., Blvd., Pl., Trl., Beach, Alley, Boat Ramp)"
+   }
+  },
+  "roadway_part": {
+   "code_sheet": 2,
+   "values": {
+    "1": "Main/Proper Lane",
+    "2": "Service/Frontage Road",
+    "3": "Entrance/On Ramp",
+    "4": "Exit/Off Ramp",
+    "5": "Connector/Flyover",
+    "98": "Other (Explain in Narrative)"
+   }
+  },
+  "direction": {
+   "code_sheet": 3,
+   "values": {
+    "N": "North",
+    "NE": "Northeast",
+    "E": "East",
+    "SE": "Southeast",
+    "S": "South",
+    "SW": "Southwest",
+    "W": "West",
+    "NW": "Northwest"
+   }
+  },
+  "street_suffix": {
+   "code_sheet": 4,
+   "values": {
+    "RD": "Road",
+    "WAY": "Way",
+    "ST": "Street",
+    "TRL": "Trail",
+    "DR": "Drive",
+    "LOOP": "Loop",
+    "AVE": "Avenue",
+    "EXPY": "Expressway",
+    "BLVD": "Boulevard",
+    "CT": "Court",
+    "PKWY": "Parkway",
+    "CIR": "Circle",
+    "LN": "Lane",
+    "PL": "Place",
+    "FWY": "Freeway",
+    "PARK": "Park",
+    "HWY": "Highway",
+    "CV": "Cove"
+   }
+  },
+  "unit_description": {
+   "code_sheet": 5,
+   "values": {
+    "1": "Motor Vehicle",
+    "2": "Train",
+    "3": "Pedalcyclist",
+    "4": "Pedestrian",
+    "5": "Motorized Conveyance",
+    "6": "Towed/Pushed/Trailer",
+    "7": "Non-Contact",
+    "98": "Other (Explain in Narrative)"
+   }
+  },
+  "vehicle_color": {
+   "code_sheet": 6,
+   "values": {
+    "BGE": "Beige",
+    "ONG": "Orange",
+    "BLK": "Black",
+    "PNK": "Pink",
+    "BLU": "Blue",
+    "PLE": "Purple",
+    "BRZ": "Bronze",
+    "RED": "Red",
+    "BRO": "Brown",
+    "SIL": "Silver",
+    "CAM": "Camouflage",
+    "TAN": "Tan",
+    "CPR": "Copper",
+    "TEA": "Teal (green)",
+    "GLD": "Gold",
+    "TRQ": "Turquoise (blue)",
+    "GRY": "Gray",
+    "WHI": "White",
+    "GRN": "Green",
+    "YEL": "Yellow",
+    "MAR": "Maroon",
+    "98": "Other (Explain in Narrative)",
+    "MUL": "Multicolored",
+    "99": "Unknown"
+   }
+  },
+  "body_style": {
+   "code_sheet": 7,
+   "values": {
+    "P2": "Passenger Car, 2-Door",
+    "SV": "Sport Utility Vehicle",
+    "P4": "Passenger Car, 4-Door",
+    "PC": "Police Car/Truck",
+    "PK": "Pickup",
+    "PM": "Police Motorcycle",
+    "AM": "Ambulance",
+    "TL": "Trailer, Semi-Trailer, or Pole Trailer",
+    "BU": "Bus",
+    "TR": "Truck",
+    "SB": "Yellow School Bus",
+    "TT": "Truck Tractor",
+    "SBO": "School Bus Other",
+    "VN": "Van",
+    "FE": "Farm Equipment",
+    "EV": "Neighborhood Electric Vehicle",
+    "FT": "Fire Truck",
+    "98": "Other (Explain in Narrative)",
+    "MC": "Motorcycle",
+    "99": "Unknown"
+   }
+  },
+  "autonomous_unit": {
+   "code_sheet": 8,
+   "values": {
+    "1": "Yes",
+    "2": "No",
+    "99": "Unknown"
+   }
+  },
+  "autonomous_level": {
+   "code_sheet": 9,
+   "values": {
+    "0": "No Automation",
+    "4": "High Automation",
+    "1": "Driver Assistance",
+    "5": "Full Automation",
+    "2": "Partial Automation",
+    "6": "Automation Level Unknown",
+    "3": "Conditional Automation",
+    "99": "Unknown"
+   }
+  },
+  "dl_id_type": {
+   "code_sheet": 10,
+   "values": {
+    "1": "Driver License",
+    "2": "Commercial Driver Lic.",
+    "3": "Occupational",
+    "4": "ID Card",
+    "5": "Unlicensed",
+    "95": "Autonomous",
+    "98": "Other",
+    "99": "Unknown"
+   }
+  },
+  "dl_class": {
+   "code_sheet": 11,
+   "values": {
+    "A": "Class A",
+    "AM": "Class A and M",
+    "B": "Class B",
+    "BM": "Class B and M",
+    "C": "Class C",
+    "CM": "Class C and M",
+    "M": "Class M",
+    "5": "Unlicensed",
+    "95": "Autonomous",
+    "98": "Other/Out of State",
+    "99": "Unknown"
+   }
+  },
+  "cdl_endorsements": {
+   "code_sheet": 12,
+   "values": {
+    "H": "Hazardous Materials",
+    "N": "Tank Vehicles",
+    "P": "Passengers",
+    "S": "School Bus",
+    "T": "Double/Triple Trailer",
+    "X": "Tank Vehicle with HazMat",
+    "5": "Unlicensed",
+    "95": "Autonomous",
+    "96": "None",
+    "98": "Other/Out of State",
+    "99": "Unknown"
+   }
+  },
+  "dl_restrictions": {
+   "code_sheet": 13,
+   "values": {
+    "A": "With corrective lenses",
+    "P6": "To/from work or LOFS 21 or over",
+    "B": "LOFS 21 or over",
+    "P7": "To/from school or LOFS 21 or over",
+    "C": "Daytime driving only",
+    "P8": "With telescopic lens",
+    "D": "Speed not to exceed 45 MPH",
+    "P9": "LOFS 21 or over bus only",
+    "E": "No manual transmission equipped CMV",
+    "P10": "LOFS 21 or over school bus only",
+    "F": "Must hold valid learner lic to MM/DD/YY",
+    "P11": "Bus not to exceed 26,000 lbs GVWR",
+    "G": "TRC 545.424 applies until MM/DD/YY",
+    "P12": "Passenger CMVs restrict to Class C only",
+    "H": "Vehicle not to exceed 26,000 lbs GVWR",
+    "P13": "LOFS 21 or over in veh equip w/airbrakes",
+    "I": "MC not to exceed 250 CC",
+    "P14": "Operation Class B exempt veh authorized",
+    "J": "Licensed MC operator 21 or over in sight",
+    "P15": "Operation Class A exempt veh authorized",
+    "K": "Intrastate only",
+    "P16": "If CMV, school buses interstate",
+    "L": "No air brake equipped CMV",
+    "P17": "If CMV, government vehicles interstate",
+    "M": "No Class A passenger vehicle",
+    "P18": "If CMV, only trans personal prop interstate",
+    "N": "No Class A and B passenger vehicle",
+    "P19": "If CMV, trans corpse/sick/injured interstate",
+    "O": "No tractor-trailer CMV",
+    "P20": "If CMV, privately trans passengers interstate",
+    "Q": "LOFS 21 or over vehicle above Class B",
+    "P21": "If CMV, fire/rescue interstate",
+    "R": "LOFS 21 or over vehicle above Class C",
+    "P22": "If CMV, intra-city zone drivers interstate",
+    "S": "Outside rearview mirror or hearing aid",
+    "P23": "If CMV, custom-harvesting interstate",
+    "T": "Automatic transmission",
+    "P24": "If CMV, transporting bees/hives interstate",
+    "U": "Applicable prosthetic device",
+    "P25": "If CMV, use in oil/water well service/drill",
+    "V": "Medical Variance",
+    "P26": "If CMV, for operation of mobile crane",
+    "W": "Power steering",
+    "P27": "HME expiration date MM/DD/YY",
+    "X": "No cargo in CMV tank vehicle",
+    "P28": "FRSI CDL valid MM/DD/YY to MM/DD/YY",
+    "Y": "Valid TX vision or limb waiver required",
+    "P29": "FRSI CDL MM/DD/YY – MM/DD/YY or exempt B veh",
+    "Z": "No full air brake equipped CMV",
+    "P30": "FRSI CDL MM/DD/YY – MM/DD/YY or exempt A veh",
+    "5": "Unlicensed",
+    "P31": "Class C only – no taxi/bus/emergency veh",
+    "95": "Autonomous",
+    "P32": "Other",
+    "96": "None",
+    "P33": "No passengers in CMV bus",
+    "98": "Other/Out of State",
+    "P34": "No express or highway driving",
+    "99": "Unknown",
+    "P35": "Restricted to operation of three-wheeled MC",
+    "P1": "For Class M TRC 545.424 until MM/DD/YY",
+    "P36": "Moped",
+    "P2": "To/From work/school",
+    "P37": "Occ/Essent need DL-no CMV-see court order",
+    "P3": "To/From work",
+    "P38": "Applicable vehicle devices",
+    "P4": "To/From school",
+    "P39": "Ignition Interlock required",
+    "P5": "To/from work/school or LOFS 21 or over",
+    "P40": "Vehicle not to exceed Class C"
+   }
+  },
+  "person_type": {
+   "code_sheet": 14,
+   "values": {
+    "1": "Driver",
+    "2": "Passenger/Occupant",
+    "3": "Pedalcyclist",
+    "4": "Pedestrian",
+    "5": "Driver of Motorcycle Type Vehicle",
+    "6": "Passenger/Occupant on Motorcycle Type Vehicle",
+    "95": "Autonomous",
+    "98": "Other (Explain in Narrative)",
+    "99": "Unknown"
+   }
+  },
+  "seat_position": {
+   "code_sheet": 15,
+   "values": {
+    "1": "Front Left",
+    "10": "Cargo Area",
+    "2": "Front Center",
+    "11": "Outside Vehicle",
+    "3": "Front Right",
+    "13": "Other in Vehicle",
+    "4": "Second Seat Left",
+    "14": "Passenger in Bus",
+    "5": "Second Seat Center",
+    "16": "Pedestrian, Pedalcyclist, or Motorized Conveyance",
+    "6": "Second Seat Right",
+    "95": "Autonomous",
+    "7": "Third Seat Left",
+    "98": "Other (Explain in Narrative)",
+    "8": "Third Seat Center",
+    "99": "Unknown",
+    "9": "Third Seat Right"
+   }
+  },
+  "injury_severity": {
+   "code_sheet": 16,
+   "values": {
+    "A": "Suspected Serious Injury",
+    "B": "Suspected Minor Injury",
+    "C": "Possible Injury",
+    "K": "Fatal Injury",
+    "N": "Not Injured",
+    "95": "Autonomous",
+    "99": "Unknown"
+   }
+  },
+  "ethnicity": {
+   "code_sheet": 17,
+   "values": {
+    "W": "White",
+    "B": "Black",
+    "H": "Hispanic",
+    "A": "Asian",
+    "I": "Amer. Indian/Alaskan Native",
+    "95": "Autonomous",
+    "98": "Other",
+    "99": "Unknown"
+   }
+  },
+  "sex": {
+   "code_sheet": 18,
+   "values": {
+    "1": "Male",
+    "2": "Female",
+    "95": "Autonomous",
+    "99": "Unknown"
+   }
+  },
+  "ejected": {
+   "code_sheet": 19,
+   "values": {
+    "1": "No",
+    "2": "Yes",
+    "3": "Yes, Partial",
+    "97": "Not Applicable",
+    "99": "Unknown"
+   }
+  },
+  "restraint": {
+   "code_sheet": 20,
+   "values": {
+    "1": "Shoulder and Lap Belt",
+    "7": "Child Booster Seat",
+    "2": "Shoulder Belt Only",
+    "96": "None",
+    "3": "Lap Belt Only",
+    "97": "Not Applicable",
+    "4": "Child Seat, Facing Forward",
+    "98": "Other (Explain in Narrative)",
+    "5": "Child Seat, Facing Rear",
+    "99": "Unknown",
+    "6": "Child Seat, Unknown"
+   }
+  },
+  "airbag": {
+   "code_sheet": 21,
+   "values": {
+    "1": "Not Deployed",
+    "2": "Deployed, Front",
+    "3": "Deployed, Side",
+    "4": "Deployed, Rear",
+    "5": "Deployed, Multiple",
+    "97": "Not Applicable",
+    "99": "Unknown"
+   }
+  },
+  "helmet": {
+   "code_sheet": 22,
+   "values": {
+    "1": "Not Worn",
+    "2": "Worn, Damaged",
+    "3": "Worn, Not Damaged",
+    "4": "Worn, Unk. Damage",
+    "97": "Not Applicable",
+    "99": "Unknown if Worn"
+   }
+  },
+  "solicitation": {
+   "code_sheet": 23,
+   "values": {
+    "Y": "Solicit",
+    "N": "No Solicit"
+   }
+  },
+  "alcohol_specimen": {
+   "code_sheet": 24,
+   "values": {
+    "1": "Breath",
+    "2": "Blood",
+    "3": "Urine",
+    "4": "Refused",
+    "96": "None",
+    "98": "Other (Explain in Narrative)"
+   }
+  },
+  "drug_specimen": {
+   "code_sheet": 25,
+   "values": {
+    "2": "Blood",
+    "3": "Urine",
+    "4": "Refused",
+    "96": "None",
+    "98": "Other (Explain in Narrative)"
+   }
+  },
+  "drug_result": {
+   "code_sheet": 26,
+   "values": {
+    "1": "Positive",
+    "2": "Negative",
+    "97": "Not Applicable",
+    "99": "Unknown"
+   }
+  },
+  "drug_category": {
+   "code_sheet": 27,
+   "values": {
+    "2": "CNS Depressants",
+    "3": "CNS Stimulants",
+    "4": "Hallucinogens",
+    "6": "Narcotic Analgesics",
+    "7": "Inhalants",
+    "8": "Cannabis",
+    "10": "Dissociative Anesthetics",
+    "11": "Multiple Drugs (Explain in Narrative)",
+    "97": "Not Applicable",
+    "98": "Other Drugs (Explain in Narrative)",
+    "99": "Unknown"
+   }
+  },
+  "fin_resp_type": {
+   "code_sheet": 28,
+   "values": {
+    "1": "Liability Insurance Policy",
+    "2": "Proof of Liability Insurance",
+    "3": "Insurance Binder",
+    "4": "Surety Bond",
+    "5": "Certificate of Deposit with Comptroller",
+    "6": "Certificate of Deposit with County Judge",
+    "7": "Certificate of Self-Insurance"
+   }
+  },
+  "damage_rating_special": {
+   "code_sheet": 29,
+   "values": {
+    "VB-1": "vehicle burned, NOT due to collision",
+    "VB-7": "vehicle catches fire due to the collision",
+    "TP-0": "top damage",
+    "VX-0": "undercarriage damage",
+    "MC-1": "motorcycle, moped, scooter",
+    "NA": "Not Applicable (Farm Tractor)"
+   }
+  },
+  "vehicle_operation": {
+   "code_sheet": 30,
+   "values": {
+    "1": "Interstate Commerce",
+    "2": "Intrastate Commerce",
+    "3": "Not in Commerce",
+    "4": "Government",
+    "5": "Personal"
+   }
+  },
+  "carrier_id_type": {
+   "code_sheet": 31,
+   "values": {
+    "1": "US DOT",
+    "2": "TxDOT",
+    "3": "ICC/MC",
+    "96": "None",
+    "98": "Other (Explain in Narrative)"
+   }
+  },
+  "cmv_vehicle_type": {
+   "code_sheet": 32,
+   "values": {
+    "1": "Passenger Car",
+    "2": "Light Truck",
+    "3": "Bus (9-15)",
+    "4": "Bus (>15)",
+    "5": "Single Unit Truck 2 Axles 6 Tires",
+    "6": "Single Unit Truck 3 or More Axles",
+    "7": "Truck Trailer",
+    "8": "Truck Tractor (Bobtail)",
+    "9": "Tractor/Semi Trailer",
+    "10": "Tractor/Double Trailer",
+    "11": "Tractor/Triple Trailer",
+    "98": "Other (Explain in Narrative)",
+    "99": "Unknown Heavy Truck"
+   }
+  },
+  "bus_type": {
+   "code_sheet": 33,
+   "values": {
+    "0": "Not a Bus",
+    "1": "School (Public or Private)",
+    "2": "Transit",
+    "3": "Intercity",
+    "4": "Charter",
+    "5": "Other",
+    "6": "Shuttle",
+    "9": "Not Reported/Unknown"
+   }
+  },
+  "hazmat_class": {
+   "code_sheet": 34,
+   "values": {
+    "1": "Explosives",
+    "2": "Gases",
+    "3": "Flammable Liquids",
+    "4": "Flammable Solids",
+    "5": "Oxidizers and Organic Peroxides",
+    "6": "Toxic Materials and Infectious Substances",
+    "7": "Radioactive Materials",
+    "8": "Corrosive Materials",
+    "9": "Miscellaneous Dangerous Goods"
+   }
+  },
+  "cargo_body_type": {
+   "code_sheet": 35,
+   "values": {
+    "1": "Bus (9-15)",
+    "8": "Auto Transporter",
+    "15": "Vehicle Towing Another Vehicle",
+    "2": "Bus (>15)",
+    "9": "Garbage Refuse",
+    "97": "Not Applicable",
+    "3": "Van/Enclosed Box",
+    "10": "Grain Chips Gravel",
+    "98": "Other (Explain in Narrative)",
+    "4": "Cargo Tank",
+    "11": "Pole",
+    "5": "Flatbed",
+    "13": "Intermodal",
+    "6": "Dump",
+    "14": "Logging",
+    "7": "Concrete Mixer"
+   }
+  },
+  "trailer_type": {
+   "code_sheet": 36,
+   "values": {
+    "1": "Full Trailer",
+    "2": "Semi-Trailer",
+    "3": "Pole Trailer"
+   }
+  },
+  "sequence_of_events": {
+   "code_sheet": 37,
+   "values": {
+    "1": "Non-Collision: Ran Off Road",
+    "12": "Collision Involving Pedestrian",
+    "2": "Non-Collision: Jackknife",
+    "13": "Collision Involving Motor Vehicle in Transport",
+    "3": "Non-Collision: Overturn Rollover",
+    "14": "Collision Involving Parked Motor Vehicle",
+    "4": "Non-Collision: Downhill Runaway",
+    "15": "Collision Involving Train",
+    "5": "Non-Collision: Cargo Loss Or Shift",
+    "16": "Collision Involving Pedalcycle",
+    "6": "Non-Collision: Explosion Or Fire",
+    "17": "Collision Involving Animal",
+    "7": "Non-Collision: Separation of Units",
+    "18": "Collision Involving Fixed Object",
+    "19": "Collision With Work Zone Maintenance Equipment",
+    "8": "Non-Collision: Cross Median/Centerline",
+    "9": "Non-Collision: Equipment Failure",
+    "20": "Collision With Other Movable Object",
+    "10": "Non-Collision: Other",
+    "21": "Collision With Unknown Movable Object",
+    "11": "Non-Collision: Unknown",
+    "98": "Other (Explain in Narrative)"
+   }
+  },
+  "contributing_factors": {
+   "code_sheet": 38,
+   "values": {
+    "1": "Animal on Road – Domestic",
+    "44": "Followed Too Closely",
+    "2": "Animal on Road – Wild",
+    "45": "Had Been Drinking",
+    "3": "Backed without Safety",
+    "46": "Handicapped Driver (Explain in Narrative)",
+    "4": "Changed Lane when Unsafe",
+    "47": "Ill (Explain in Narrative)",
+    "14": "Disabled in Traffic Lane",
+    "48": "Impaired Visibility (Explain in Narrative)",
+    "15": "Disregard Stop and Go Signal",
+    "49": "Improper Start from Parked Position",
+    "16": "Disregard Stop Sign or Light",
+    "50": "Load Not Secured",
+    "17": "Disregard Turn Marks at Intersection",
+    "51": "Opened Door Into Traffic Lane",
+    "18": "Disregard Warning Sign at Construction",
+    "52": "Oversized Vehicle or Load",
+    "19": "Distraction in Vehicle",
+    "53": "Overtake and Pass Insufficient Clearance",
+    "20": "Driver Inattention",
+    "54": "Parked and Failed to Set Brakes",
+    "21": "Drove Without Headlights",
+    "55": "Parked in Traffic Lane",
+    "22": "Failed to Control Speed",
+    "56": "Parked without Lights",
+    "23": "Failed to Drive in Single Lane",
+    "57": "Passed in No Passing Lane",
+    "24": "Failed to Give Half of Roadway",
+    "58": "Passed on Right Shoulder",
+    "25": "Failed to Heed Warning Sign",
+    "59": "Pedestrian FTYROW to Vehicle",
+    "26": "Failed to Pass to Left Safely",
+    "60": "Unsafe Speed",
+    "27": "Failed to Pass to Right Safely",
+    "61": "Speeding – (Over Limit)",
+    "28": "Failed to Signal or Gave Wrong Signal",
+    "62": "Taking Medication (Explain in Narrative)",
+    "29": "Failed to Stop at Proper Place",
+    "63": "Turned Improperly – Cut Corner on Left",
+    "30": "Failed to Stop for School Bus",
+    "64": "Turned Improperly – Wide Right",
+    "31": "Failed to Stop for Train",
+    "65": "Turned Improperly – Wrong Lane",
+    "32": "Failed to Yield ROW – Emergency Vehicle",
+    "66": "Turned when Unsafe",
+    "33": "Failed to Yield ROW – Open Intersection",
+    "67": "Intoxicated - Alcohol",
+    "34": "Failed to Yield ROW – Private Drive",
+    "68": "Intoxicated - Drug",
+    "35": "Failed to Yield ROW – Stop Sign",
+    "69": "Wrong Side – Approach or Intersection",
+    "36": "Failed to Yield ROW – To Pedestrian",
+    "70": "Wrong Side – Not Passing",
+    "37": "Failed to Yield ROW – Turning Left",
+    "71": "Wrong Way – One Way Road",
+    "38": "Failed to Yield ROW – Turn on Red",
+    "73": "Road Rage",
+    "39": "Failed to Yield ROW – Yield Sign",
+    "74": "Cell/Mobile Device Use – Talking",
+    "40": "Fatigued or Asleep",
+    "75": "Cell/Mobile Device Use – Texting",
+    "41": "Faulty Evasive Action",
+    "76": "Cell/Mobile Device Use – Other",
+    "42": "Fire in Vehicle",
+    "77": "Cell/Mobile Device Use – Unknown",
+    "78": "Failed to Slow Down or Move Over for Vehicles Displaying Emergency Lights",
+    "43": "Fleeing or Evading Police",
+    "79": "Drove on improved shoulder",
+    "98": "Other (Explain in Narrative)"
+   }
+  },
+  "vehicle_defects": {
+   "code_sheet": 39,
+   "values": {
+    "5": "Defective or No Headlamps",
+    "6": "Defective or No Stop Lamps",
+    "7": "Defective or No Tail Lamps",
+    "8": "Defective or No Turn Signal Lamps",
+    "9": "Defective or No Trailer Brakes",
+    "10": "Defective or No Vehicle Brakes",
+    "11": "Defective Steering Mechanism",
+    "12": "Defective or Slick Tires",
+    "13": "Defective Trailer Hitch",
+    "14": "Automation Failure",
+    "98": "Other (Explain in Narrative)"
+   }
+  },
+  "weather": {
+   "code_sheet": 40,
+   "values": {
+    "1": "Clear",
+    "2": "Cloudy",
+    "3": "Rain",
+    "4": "Sleet/Hail",
+    "5": "Snow",
+    "6": "Fog",
+    "7": "Blowing Sand/Snow",
+    "8": "Severe Crosswinds",
+    "98": "Other (Explain in Narrative)",
+    "99": "Unknown"
+   }
+  },
+  "light": {
+   "code_sheet": 41,
+   "values": {
+    "1": "Daylight",
+    "2": "Dark, Not Lighted",
+    "3": "Dark, Lighted",
+    "4": "Dark, Unknown Lighting",
+    "5": "Dawn",
+    "6": "Dusk",
+    "98": "Other (Explain in Narrative)",
+    "99": "Unknown"
+   }
+  },
+  "entering_roads": {
+   "code_sheet": 42,
+   "values": {
+    "2": "Three Entering Roads – T",
+    "3": "Three Entering Roads – Y",
+    "4": "Four Entering Roads",
+    "5": "Five Entering Roads",
+    "6": "Six Entering Roads",
+    "7": "Traffic Circle",
+    "8": "Cloverleaf",
+    "97": "Not Applicable",
+    "98": "Other (Explain in Narrative)"
+   }
+  },
+  "roadway_type": {
+   "code_sheet": 43,
+   "values": {
+    "1": "Two-Way, Not Divided",
+    "2": "Two-Way, Divided, Unprotected Median",
+    "3": "Two-Way, Divided, Protected Median",
+    "4": "One-Way",
+    "98": "Other (Explain in Narrative)"
+   }
+  },
+  "roadway_alignment": {
+   "code_sheet": 44,
+   "values": {
+    "1": "Straight, Level",
+    "2": "Straight, Grade",
+    "3": "Straight, Hillcrest",
+    "4": "Curve, Level",
+    "5": "Curve, Grade",
+    "6": "Curve, Hillcrest",
+    "98": "Other (Explain in Narrative)",
+    "99": "Unknown"
+   }
+  },
+  "surface_condition": {
+   "code_sheet": 45,
+   "values": {
+    "1": "Dry",
+    "2": "Wet",
+    "3": "Standing Water",
+    "4": "Snow",
+    "5": "Slush",
+    "6": "Ice",
+    "7": "Sand, Mud, Dirt",
+    "98": "Other (Explain in Narrative)",
+    "99": "Unknown"
+   }
+  },
+  "traffic_control": {
+   "code_sheet": 46,
+   "values": {
+    "2": "Inoperative (Explain in Narrative)",
+    "11": "Center Stripe/Divider",
+    "3": "Officer",
+    "12": "No Passing Zone",
+    "4": "Flagman",
+    "13": "RR Gate/Signal",
+    "5": "Signal Light",
+    "15": "Crosswalk",
+    "6": "Flashing Red Light",
+    "16": "Bike Lane",
+    "7": "Flashing Yellow Light",
+    "17": "Marked Lanes",
+    "8": "Stop Sign",
+    "18": "Signal Light With Red Light Running Camera",
+    "9": "Yield Sign",
+    "96": "None",
+    "10": "Warning Sign",
+    "98": "Other (Explain in Narrative)"
+   }
+  }
+ }
+}
