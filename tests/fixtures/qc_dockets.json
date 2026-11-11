@@ -1,0 +1,7 @@
+{
+  "content": [
+    {"docketNumber": 123456, "docketNumberId": 1, "dotNumber": 1234567, "prefix": "MC"},
+    {"docketNumber": 654321, "docketNumberId": 2, "dotNumber": 1234567, "prefix": "MC"}
+  ],
+  "retrievalDate": "2026-11-11T19:21:30.412+0000"
+}

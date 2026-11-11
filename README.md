@@ -1,4 +1,4 @@
-# Report Synthesis
+# CaseSynth
 
 Decodes a Texas police crash report (form CR-3) into a plain-English brief for a
 personal injury firm's first-week case check: what builds the case, what could
@@ -19,10 +19,11 @@ Built:
 - **Outside lookups** (`--lookups`). For each vehicle, NHTSA's VIN decode, recalls and
   owner complaints; for each commercial vehicle with a USDOT number, the carrier's
   FMCSA record (status, authority, fleet size, inspections and out-of-service rates
-  against the national average, reported crashes, safety rating). Findings become
-  flags: a recall on the same system as the officer's defect code, an above-average
-  out-of-service rate, a carrier name that does not match its USDOT number, a VIN
-  that does not decode or does not match the vehicle on the report.
+  against the national average, reported crashes, safety rating, and with a key the
+  liability insurance on file). Findings become flags: a recall on the same system as
+  the officer's defect code, an above-average out-of-service rate, insurance on file
+  below the required amount, a carrier name that does not match its USDOT number, a
+  VIN that does not decode or does not match the vehicle on the report.
 
 Not built yet:
 
@@ -30,8 +31,8 @@ Not built yet:
   record from a report PDF needs real sample reports to build and test against.
 - **Older form versions** (2010, 2015, 2017, 2018). Code meanings differ between
   versions, so other versions are refused until their tables are loaded.
-- **More outside lookups.** Per-inspection violation detail, carrier insurance on
-  file, Texas-only carriers (TxDMV numbers), property records.
+- **More outside lookups.** Per-inspection violation detail, the carrier's insurer and
+  policy (FMCSA's L&I system), Texas-only carriers (TxDMV numbers), property records.
 - **Narrative against codes.** Conflicts between the officer's narrative and the coded
   boxes are not detected; the narrative is only scanned for keywords.
 - **Damage area codes.** These are defined in TxDOT's CR-80 Vehicle Damage Guide,
@@ -58,8 +59,19 @@ python -m cr3 examples/commercial_rear_end.json --client-unit 3 --lookups
 NHTSA and FMCSA; no names, addresses, plates or policy numbers leave the machine.
 A lookup that fails is flagged in the brief and does not stop it. Recalls and
 complaints are for the make, model and year, so a specific VIN's recall status still
-has to be confirmed. The carrier record is read from FMCSA's public snapshot page;
-FMCSA's keyed API would be sturdier and is the planned replacement.
+has to be confirmed.
+
+The carrier record comes from FMCSA's QCMobile API when the `FMCSA_WEBKEY` environment
+variable holds a WebKey (free, from https://mobile.fmcsa.dot.gov/QCDevsite/). The key
+is sent only to `mobile.fmcsa.dot.gov` and never appears in the brief, the JSON or an
+error message. Without a key, or if the API call fails for any reason, the record is
+read from FMCSA's public SAFER snapshot page instead and the brief says so. The two
+sources differ in small ways: the page gives a combined inspection total, the API gives
+insurance on file and MC numbers from a second request.
+
+```
+FMCSA_WEBKEY=... python -m cr3 examples/commercial_rear_end.json --client-unit 3 --lookups
+```
 
 The example report uses made-up VINs and a made-up USDOT number, so a live run on it
 reports that they do not check out. `examples/commercial_rear_end.lookups.brief.md`

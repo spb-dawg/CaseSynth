@@ -80,12 +80,20 @@ def _outside_records(lookups: list[dict]) -> list[str]:
                 ("Fleet", f"{c['power_units']} power units, {c['drivers']} drivers"),
                 ("Safety rating", c["safety_rating"] or "none on file"),
             ])
+            ins = c.get("insurance")
+            if ins:
+                money = lambda v: "none" if not v else f"${v:,}"
+                out.append(f"- **Insurance on file with FMCSA:** liability {money(ins['bipd_on_file'])}"
+                           + (f" (required {money(ins['bipd_required_amount'])})" if ins["bipd_required"] else " (not required)")
+                           + f", cargo {money(ins['cargo_on_file'])}, bond {money(ins['bond_on_file'])}.")
             for kind, i in c["inspections"].items():
                 out.append(f"- **{kind.capitalize()} inspections, 24 months to {c['as_of']}:** {i['count']}, "
                            f"{i['out_of_service']} out of service ({i['oos_rate']}%; national average {i['national_oos_rate']}%)")
             cr = c["crashes"]
             out.append(f"- **Reported crashes, same period:** {cr['total']} ({cr['fatal']} fatal, {cr['injury']} injury, "
                        f"{cr['tow']} tow-away). Involvement only, no finding of fault.")
+            out.append(f"- **Carrier record source:** {c['source']}"
+                       + (f". {rec['carrier_note']}" if rec.get("carrier_note") else "") + ".")
         for error in rec["errors"]:
             out.append(f"- **Lookup did not complete:** {error}")
         out.append("")

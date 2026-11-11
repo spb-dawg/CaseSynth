@@ -7,7 +7,7 @@ from pathlib import Path
 from cr3 import decode, find_flags, render_brief
 from cr3.flags import sort_flags
 from cr3.lookups import enrich, fmcsa, lookup_flags, nhtsa
-from cr3.lookups.http import LookupFailed
+from cr3.lookups.http import HttpError, LookupFailed
 
 ROOT = Path(__file__).parent.parent
 FIXTURES = ROOT / "tests" / "fixtures"
@@ -19,16 +19,23 @@ def fixture(name):
     return (FIXTURES / name).read_text(encoding="utf-8")
 
 
-def fake_fetch(vin="vin_clean.json", carrier="safer_carrier.html", fail=()):
-    """Stand in for the network: answer each service from a saved response."""
+def fake_fetch(vin="vin_clean.json", carrier="safer_carrier.html", api="qc_carrier.json", fail=()):
+    """Stand in for the network: answer each service from a saved response.
+
+    `api="bad_key"` answers the FMCSA API the way the real service does for an unknown WebKey.
+    """
     calls = []
 
     def fetch(url):
         calls.append(url)
         truck = "1XK" in url or "KENWORTH" in url.upper()
+        if "mobile.fmcsa" in url and api == "bad_key":
+            raise HttpError("mobile.fmcsa.dot.gov", 404, fixture("qc_bad_key.json"))
         for marker, name in (("DecodeVinValues", vin if truck else "vin_camry.json"),
                              ("recallsByVehicle", "recalls_kenworth_t680_2019.json" if truck else None),
                              ("complaintsByVehicle", None if truck else "complaints_sample.json"),
+                             ("docket-numbers", "qc_dockets.json"),
+                             ("mobile.fmcsa", api),
                              ("safer.fmcsa", carrier)):
             if marker in url:
                 if marker in fail:
@@ -40,9 +47,12 @@ def fake_fetch(vin="vin_clean.json", carrier="safer_carrier.html", fail=()):
     return fetch
 
 
-def run(report=EXAMPLE, client_unit=3, **kw):
+KEY = "test-web-key-not-real"
+
+
+def run(report=EXAMPLE, client_unit=3, webkey=None, **kw):
     decoded = decode(report)
-    lookups = enrich(decoded, fetch=fake_fetch(**kw))
+    lookups = enrich(decoded, fetch=fake_fetch(**kw), fmcsa_webkey=webkey)
     return decoded, lookups, lookup_flags(decoded, lookups, client_unit=client_unit)
 
 
@@ -73,6 +83,86 @@ class Carrier(unittest.TestCase):
         with self.assertRaises(LookupFailed):
             fmcsa.carrier_snapshot("NONE", fetch)
         self.assertEqual(fetch.calls, [])
+
+
+class CarrierApi(unittest.TestCase):
+    """FMCSA's keyed QCMobile API, primary when a WebKey is given."""
+
+    def test_api_record_matches_the_snapshot_shape(self):
+        api = fmcsa.carrier_api("USDOT 1234567", fake_fetch(), KEY)
+        page = fmcsa.carrier_snapshot("USDOT 1234567", fake_fetch())
+        self.assertEqual(set(api) - {"mcs150_outdated"}, set(page))
+        for field in ("legal_name", "dba_name", "usdot", "usdot_status", "out_of_service_date", "power_units",
+                      "drivers", "crashes", "safety_rating"):
+            self.assertEqual(api[field], page[field], field)
+        self.assertEqual(api["inspections"]["vehicle"], page["inspections"]["vehicle"])
+        self.assertEqual(api["source"], fmcsa.SOURCE_API)
+        self.assertEqual(page["source"], fmcsa.SOURCE_SAFER)
+
+    def test_api_only_fields(self):
+        c = fmcsa.carrier_api("1234567", fake_fetch(), KEY)
+        self.assertEqual(c["mc_numbers"], ["MC-123456", "MC-654321"])
+        self.assertEqual(c["operating_authority"], "AUTHORIZED (common carrier, broker)")
+        self.assertEqual(c["rating_date"], "2024-03-14")
+        self.assertEqual(c["as_of"], "2026-11-09")
+        self.assertIsNone(c["total_inspections"])
+        self.assertEqual(c["insurance"], {"bipd_required": True, "bipd_required_amount": 750000, "bipd_on_file": 750000,
+                                          "cargo_on_file": 0, "bond_on_file": 0})
+        self.assertTrue(c["allowed_to_operate"])
+
+    def test_authority_wording(self):
+        text = lambda **kw: fmcsa._authority_text({f"{k}AuthorityStatus": v for k, v in kw.items()})
+        self.assertEqual(text(common="N", contract="N", broker="N"), "NOT AUTHORIZED (no authority on file)")
+        self.assertEqual(text(common="I", contract="N", broker="N"), "NOT AUTHORIZED (authority inactive)")
+        self.assertEqual(text(common="N", contract="A", broker="N"), "AUTHORIZED (contract carrier)")
+        self.assertTrue(text(common="N", contract="N", broker="N").startswith("NOT AUTHORIZED"))  # what the flag checks
+
+    def test_unknown_number_returns_none(self):
+        self.assertIsNone(fmcsa.carrier_api("9999999", fake_fetch(api="qc_not_found.json"), KEY))
+
+    def test_bad_key_fails_loudly_without_revealing_it(self):
+        with self.assertRaises(LookupFailed) as cm:
+            fmcsa.carrier_api("1234567", fake_fetch(api="bad_key"), KEY)
+        self.assertIn("rejected the WebKey", str(cm.exception))
+        self.assertNotIn(KEY, str(cm.exception))
+
+    def test_unrecognised_json_fails_loudly(self):
+        with self.assertRaises(LookupFailed):
+            fmcsa.parse_api('{"content": {"somethingElse": 1}}')
+        with self.assertRaises(LookupFailed):
+            fmcsa.parse_api("<html>maintenance</html>")
+
+    def test_docket_lookup_failure_does_not_sink_the_record(self):
+        c = fmcsa.carrier_api("1234567", fake_fetch(fail=("docket-numbers",)), KEY)
+        self.assertEqual(c["mc_numbers"], [])
+        self.assertEqual(c["legal_name"], "EXAMPLE FREIGHT LINES LLC")
+
+    def test_key_is_sent_only_to_the_api_host(self):
+        fetch = fake_fetch()
+        fmcsa.carrier_record("1234567", fetch, webkey=KEY)
+        for url in fetch.calls:
+            self.assertIn("mobile.fmcsa.dot.gov", url)
+            self.assertIn(f"webKey={KEY}", url)
+
+    def test_no_key_means_safer_page_only(self):
+        fetch = fake_fetch()
+        record, note = fmcsa.carrier_record("1234567", fetch)
+        self.assertEqual(record["source"], fmcsa.SOURCE_SAFER)
+        self.assertIsNone(note)
+        self.assertTrue(all("safer.fmcsa" in url for url in fetch.calls))
+
+    def test_api_failure_falls_back_to_the_page_with_a_note(self):
+        for kw in ({"api": "bad_key"}, {"fail": ("mobile.fmcsa",)}):
+            fetch = fake_fetch(**kw)
+            record, note = fmcsa.carrier_record("1234567", fetch, webkey=KEY)
+            self.assertEqual(record["source"], fmcsa.SOURCE_SAFER)
+            self.assertIn("used the SAFER snapshot page instead", note)
+            self.assertNotIn(KEY, note)
+            self.assertTrue(any("safer.fmcsa" in url for url in fetch.calls))
+
+    def test_both_sources_failing_is_a_failed_lookup(self):
+        with self.assertRaises(LookupFailed):
+            fmcsa.carrier_record("1234567", fake_fetch(fail=("mobile.fmcsa", "safer.fmcsa")), webkey=KEY)
 
 
 class Vehicle(unittest.TestCase):
@@ -170,6 +260,46 @@ class Enrichment(unittest.TestCase):
         _, lookups, flags = run(fail=("safer.fmcsa",))
         self.assertNotIn("carrier", lookups[0])
         self.assertEqual(len(lookups[0]["recalls"]), 9)
+
+    def test_api_record_drives_the_same_flags(self):
+        _, lookups, flags = run(webkey=KEY)
+        c = lookups[0]["carrier"]
+        self.assertEqual(c["source"], fmcsa.SOURCE_API)
+        self.assertNotIn("carrier_note", lookups[0])
+        found = titles(flags, "builder")
+        self.assertIn("Unit 1: carrier out-of-service rate above the national average", found)
+        self.assertIn("Unit 1: carrier safety rating is Conditional", found)
+        record = next(f for f in flags if f.title == "Unit 1: carrier federal record")
+        self.assertIn("60 vehicle inspections, 88 driver inspections", record.detail)
+        self.assertIn("Liability insurance on file: $750,000", record.detail)
+        self.assertIn(fmcsa.SOURCE_API, record.detail)
+        self.assertNotIn("Unit 1: carrier's liability insurance on file is below the required amount", found)
+
+    def test_underinsured_carrier_is_flagged(self):
+        fetch = fake_fetch()
+        low = json.loads(fixture("qc_carrier.json"))
+        low["content"]["carrier"]["bipdInsuranceOnFile"] = "0"
+        decoded = decode(EXAMPLE)
+        lookups = enrich(decoded, fetch=lambda url: json.dumps(low) if "carriers/0000000?" in url else fetch(url), fmcsa_webkey=KEY)
+        flags = lookup_flags(decoded, lookups, client_unit=3)
+        under = next(f for f in flags if "liability insurance" in f.title)
+        self.assertIn("requires $750,000", under.detail)
+        self.assertIn("$0 on file", under.detail)
+
+    def test_fallback_is_noted_in_the_lookup_record_not_as_an_error(self):
+        _, lookups, flags = run(webkey=KEY, api="bad_key")
+        self.assertEqual(lookups[0]["carrier"]["source"], fmcsa.SOURCE_SAFER)
+        self.assertIn("rejected the WebKey", lookups[0]["carrier_note"])
+        self.assertEqual(lookups[0]["errors"], [])
+        self.assertNotIn("Unit 1: outside lookup did not complete", titles(flags))
+
+    def test_key_never_reaches_the_output(self):
+        decoded, lookups, extra = run(webkey=KEY, api="bad_key")
+        flags = sort_flags(find_flags(decoded, client_unit=3, as_of=AS_OF) + extra)
+        brief = render_brief(decoded, flags, client_unit=3, lookups=lookups)
+        self.assertNotIn(KEY, brief)
+        self.assertNotIn(KEY, json.dumps(lookups))
+        self.assertIn("used the SAFER snapshot page instead", brief)
 
     def test_carrier_findings_are_not_raised_against_the_client(self):
         _, _, flags = run(client_unit=1)

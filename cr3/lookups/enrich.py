@@ -6,6 +6,7 @@ A lookup that fails is recorded and flagged; it never stops the brief.
 """
 from __future__ import annotations
 
+import os
 import re
 
 from ..decode import DecodedReport
@@ -31,8 +32,18 @@ def _same(a, b) -> bool:
     return bool(norm(a)) and (norm(a) in norm(b) or norm(b) in norm(a))
 
 
-def enrich(decoded: DecodedReport, fetch=http_fetch) -> list[dict]:
-    """Return one lookup record per unit that has a VIN or a USDOT number."""
+def fmcsa_webkey_from_env() -> str | None:
+    """The FMCSA QCMobile WebKey, from the FMCSA_WEBKEY environment variable, or None."""
+    return (os.environ.get("FMCSA_WEBKEY") or "").strip() or None
+
+
+def enrich(decoded: DecodedReport, fetch=http_fetch, fmcsa_webkey: str | None = None) -> list[dict]:
+    """Return one lookup record per unit that has a VIN or a USDOT number.
+
+    With `fmcsa_webkey`, carriers come from FMCSA's keyed API, falling back to the SAFER
+    page if that fails; without it, from the SAFER page only. The key is sent only to
+    mobile.fmcsa.dot.gov and never stored in the returned records.
+    """
     results = []
     for i, u in enumerate(decoded.data.get("units", [])):
         rec = {"unit_num": u.get("unit_num", i + 1), "where": f"units[{i}]", "errors": []}
@@ -56,8 +67,10 @@ def enrich(decoded: DecodedReport, fetch=http_fetch) -> list[dict]:
         cmv = u.get("cmv") or {}
         if _code(cmv.get("carrier_id_type")) == "1" and cmv.get("carrier_id_num"):
             try:
-                rec["carrier"] = fmcsa.carrier_snapshot(cmv["carrier_id_num"], fetch)
+                rec["carrier"], note = fmcsa.carrier_record(cmv["carrier_id_num"], fetch, webkey=fmcsa_webkey)
                 rec["carrier_searched"] = str(cmv["carrier_id_num"])
+                if note:
+                    rec["carrier_note"] = note
             except LookupFailed as exc:
                 rec["errors"].append(f"FMCSA lookup failed: {exc}")
 
@@ -137,16 +150,30 @@ def lookup_flags(decoded: DecodedReport, lookups: list[dict], client_unit: int |
                                   "The report codes this trip as interstate commerce, and FMCSA lists the carrier as NOT "
                                   "AUTHORIZED. This does not apply to private carriers; check which this is.", src, n))
             high = [f"{kind} {i['oos_rate']}% (national average {i['national_oos_rate']}%, {i['out_of_service']} of {i['count']} inspections)"
-                    for kind, i in c["inspections"].items() if i["count"] and i["oos_rate"] > i["national_oos_rate"]]
+                    for kind, i in c["inspections"].items()
+                    if i["count"] and i["national_oos_rate"] is not None and i["oos_rate"] > i["national_oos_rate"]]
             if high:
                 flags.append(Flag("builder", f"Unit {n}: carrier out-of-service rate above the national average",
                                   f"{c['legal_name']}, 24 months to {c['as_of']}: " + "; ".join(high) + ".", src, n))
             if c["safety_rating"] and c["safety_rating"].lower() != "satisfactory":
                 flags.append(Flag("builder", f"Unit {n}: carrier safety rating is {c['safety_rating']}",
                                   f"FMCSA safety rating {c['safety_rating']}, dated {c['rating_date'] or 'not stated'}.", src, n))
+            ins = c.get("insurance")
+            if ins and ins["bipd_required"] and (ins["bipd_on_file"] or 0) < (ins["bipd_required_amount"] or 0):
+                flags.append(Flag("builder", f"Unit {n}: carrier's liability insurance on file is below the required amount",
+                                  f"FMCSA requires ${ins['bipd_required_amount']:,} of bodily injury and property damage cover "
+                                  f"and has ${ins['bipd_on_file'] or 0:,} on file. Confirm current cover with the carrier's insurer.",
+                                  src, n))
+            if c["total_inspections"] is not None:
+                insp_text = f"{c['total_inspections']} inspections"
+            else:
+                insp_text = ", ".join(f"{i['count']} {kind} inspections" for kind, i in c["inspections"].items() if i["count"]) \
+                    or "no inspections"
             flags.append(Flag("builder", f"Unit {n}: carrier federal record",
                               f"{c['legal_name']} (USDOT {c['usdot']}): {c['power_units']} power units, {c['drivers']} drivers. "
-                              f"In the 24 months to {c['as_of']}: {c['total_inspections']} inspections and "
+                              f"In the 24 months to {c['as_of']}: {insp_text} and "
                               f"{c['crashes']['total']} reported crashes ({c['crashes']['fatal']} fatal, "
-                              f"{c['crashes']['injury']} injury). Crash counts show involvement, not fault.", src, n))
+                              f"{c['crashes']['injury']} injury). Crash counts show involvement, not fault."
+                              + (f" Liability insurance on file: ${ins['bipd_on_file']:,}." if ins and ins["bipd_on_file"] is not None else "")
+                              + f" Source: {c['source']}.", src, n))
     return flags

@@ -23,7 +23,7 @@ Texas CR-3, form version 2023. Client: Unit 3. Every item below is a fact read f
 - **Unit 1: 9 recall(s) for this vehicle line.** NHTSA lists 9 recall(s) for the 2019 KENWORTH T680: ELECTRICAL SYSTEM:WIRING; ELECTRONIC STABILITY CONTROL (ESC); ENGINE AND ENGINE COOLING:ENGINE:DIESEL; EXTERIOR LIGHTING; PARKING BRAKE; POWER TRAIN:CLUTCH ASSEMBLY; SERVICE BRAKES, AIR:ANTILOCK; SERVICE BRAKES, AIR:SUPPLY:RESERVOIR/TANK; STEERING:CRITICAL FASTENERS. These apply to the model line; confirm whether this VIN is affected and repaired. _(source: units[0].vin)_
 - **Unit 1: carrier out-of-service rate above the national average.** EXAMPLE FREIGHT LINES LLC, 24 months to 11/09/2026: vehicle 35.0% (national average 22.26%, 21 of 60 inspections); driver 10.2% (national average 6.67%, 9 of 88 inspections). _(source: units[0].cmv.carrier_id_num)_
 - **Unit 1: carrier safety rating is Conditional.** FMCSA safety rating Conditional, dated 03/14/2024. _(source: units[0].cmv.carrier_id_num)_
-- **Unit 1: carrier federal record.** EXAMPLE FREIGHT LINES LLC (USDOT 0000000): 42 power units, 51 drivers. In the 24 months to 11/09/2026: 88 inspections and 11 reported crashes (1 fatal, 4 injury). Crash counts show involvement, not fault. _(source: units[0].cmv.carrier_id_num)_
+- **Unit 1: carrier federal record.** EXAMPLE FREIGHT LINES LLC (USDOT 0000000): 42 power units, 51 drivers. In the 24 months to 11/09/2026: 88 inspections and 11 reported crashes (1 fatal, 4 injury). Crash counts show involvement, not fault. Source: FMCSA SAFER snapshot page. _(source: units[0].cmv.carrier_id_num)_
 
 ## Deadlines
 
@@ -210,6 +210,7 @@ From NHTSA (vehicles) and FMCSA (carriers), looked up by the VIN and USDOT numbe
 - **Driver inspections, 24 months to 11/09/2026:** 88, 9 out of service (10.2%; national average 6.67%)
 - **Hazmat inspections, 24 months to 11/09/2026:** 0, 0 out of service (0.0%; national average 4.44%)
 - **Reported crashes, same period:** 11 (1 fatal, 4 injury, 6 tow-away). Involvement only, no finding of fault.
+- **Carrier record source:** FMCSA SAFER snapshot page.
 
 **Unit 3**
 

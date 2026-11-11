@@ -9,6 +9,7 @@ from .brief import render_brief
 from .decode import decode
 from .flags import find_flags, parse_date, sort_flags
 from .lookups import enrich, lookup_flags
+from .lookups.enrich import fmcsa_webkey_from_env
 
 
 def main(argv=None) -> int:
@@ -17,7 +18,8 @@ def main(argv=None) -> int:
     ap.add_argument("--client-unit", type=int, help="unit number of the firm's client")
     ap.add_argument("--as-of", help="date to count deadlines from (default: today)")
     ap.add_argument("--lookups", action="store_true",
-                    help="look up VINs (NHTSA) and USDOT numbers (FMCSA) online; sends only those numbers")
+                    help="look up VINs (NHTSA) and USDOT numbers (FMCSA) online; sends only those numbers. "
+                         "Set FMCSA_WEBKEY to use FMCSA's keyed API; without it the public SAFER page is read")
     ap.add_argument("--json", action="store_true", help="output decoded data and flags as JSON instead of Markdown")
     args = ap.parse_args(argv)
 
@@ -33,7 +35,7 @@ def main(argv=None) -> int:
     if args.as_of and as_of is None:
         ap.error("--as-of must be YYYY-MM-DD")
     flags = find_flags(decoded, client_unit=args.client_unit, as_of=as_of)
-    lookups = enrich(decoded) if args.lookups else []
+    lookups = enrich(decoded, fmcsa_webkey=fmcsa_webkey_from_env()) if args.lookups else []
     flags = sort_flags(flags + lookup_flags(decoded, lookups, client_unit=args.client_unit))
     if args.json:
         json.dump({"decoded": decoded.data, "flags": [f.as_dict() for f in flags], "lookups": lookups}, sys.stdout, indent=1)
